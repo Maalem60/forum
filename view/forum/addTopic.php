@@ -7,10 +7,11 @@
 
     <label for="category_id">Catégorie :</label><br>
     <select id="category_id" name="category_id" required>
-        <!-- ici tu peux boucler sur les catégories en PHP -->
-        <option value="1">Général</option>
-        <option value="2">Technique</option>
-        <!-- etc -->
+        <?php foreach($categories as $category): ?>
+            <option value="<?= $category->getId() ?>">
+                <?= $category->getName() ?>
+            </option>
+        <?php endforeach; ?>
     </select><br><br>
 
     <label for="content">Message :</label><br>

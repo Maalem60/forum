@@ -1,5 +1,5 @@
 <?php
-namespace Controller;
+namespace controller;
 
 use App\Session;
 use App\AbstractController;
@@ -19,16 +19,37 @@ public function index() {
 
         // le controller communique avec la vue "listCategories" (view) pour lui envoyer la liste des catégories (data)
         return [
-            "view" => VIEW_DIR."forum/listCategories.php",
+            "view" => "forum/listCategories.php",
             "meta_description" => "Liste des catégories du forum",
             "data" => [
                 "categories" => $categories
             ]
         ];
     }
+   
+public function addPost() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && Session::getUser()) {
+        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $id_topic = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        $id_user = Session::getUser()->getId();
+
+        if ($content && $id_topic) {
+            $postManager = new PostManager();
+            $postManager->addPost($content, $id_user, $id_topic);
+  Session::addFlash("success", "Votre message a été posté avec succès.");
+           // Redirection vers le topic
+            $this->redirectTo("forum", "listPostsByTopic", $id_topic);
+        } else {
+            Session::addFlash("error", "Le message est vide ou invalide.");
+            $this->redirectTo("forum", "listPostsByTopic", $id_topic);
+        }
+        }
+    }
+
+
 // public function listTopics($id) {
 //     return $this->listTopicsByCategory($id);
-// }
+
 public function addTopic()
     {
         // Vérifier si utilisateur connecté
@@ -37,9 +58,18 @@ public function addTopic()
             header("Location: index.php?ctrl=security&action=login");
             exit();
         }
+         // Instancie le manager des catégories
+         $categoryManager = new CategoryManager();
+         // Récupère toutes les catégories, triées par nom croissant
+         $categories = $categoryManager->findAll();  // doit retourner une App\Collection
+    
+         return [
+        "view" => "forum/addTopic.php",
+        "data" => ["categories" => $categories]
+    ];
 
         // Sinon, afficher la vue formulaire d'ajout de topic
-        $this->render('forum/addTopic');
+      //  $this->render('forum/addTopic');
     }
 public function saveTopic()
 {
@@ -102,7 +132,7 @@ public function listTopicsByCategory($id) {
   
 
         return [
-            "view" => VIEW_DIR."forum/listTopics.php",
+            "view" => "forum/listTopics.php",
             "meta_description" => "Liste des topics par catégorie : ".$category,
             "data" => [
                 "category" => $category,
@@ -118,13 +148,14 @@ public function listPostsByTopic($id) {
         $topic = $topicManager->findOneById($id);
         $posts = $postManager->findPostsByTopic($id);
 
-      
+        $showForm = Session::isUserConnected();
         return [
-            "view" => VIEW_DIR."forum/listPost.php",
+            "view" => "forum/listPost.php",
             "meta_description" => "Liste des posts par topics : ".$topic,
             "data" => [
                 "topic" => $topic,
-                "posts" => $posts
+                "posts" => $posts,
+                "showForm" => $showForm 
             ]
         ];
     }

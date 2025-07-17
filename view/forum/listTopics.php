@@ -20,3 +20,9 @@ $topics = $result["data"]['topics'] ?? [];
 <?php else : ?>
     <p>Aucun topic pour cette catégorie</p>
     <?php endif; ?>
+    
+    <?php if(App\Session::getUser()) : ?>
+    <a href="index.php?ctrl=forum&action=addTopic">➕ Créer un nouveau topic</a>
+<?php endif; ?>
+
+    <a href="javascript:history.back()" class="retour">← Retour à la page précédente</a>

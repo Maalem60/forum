@@ -30,56 +30,55 @@ class SecurityController extends AbstractController implements ControllerInterfa
         }
 
         return [
-            "view" => VIEW_DIR . "security/login.php",
+            "view" => "security/login.php",
             "meta_description" => "Connexion à l'espace membre",
             "data" => ["message" => $message ?? ""]
         ];
     }
 
     public function register()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $password2 = filter_input(INPUT_POST, 'password2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $password2 = filter_input(INPUT_POST, 'password2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            if ($pseudo && $email && $password && $password2) {
-                if ($password !== $password2) {
-                    $message = "❌ Les mots de passe ne correspondent pas.";
-                } elseif (strlen($password) < 6) {
-                    $message = "❌ Le mot de passe doit contenir au moins 6 caractères.";
-                } else {
-                    $userManager = new UserManager();
-
-                    $pseudoExists = $userManager->findOneByPseudo($pseudo);
-                    $emailExists = $userManager->findOneByEmail($email);
-
-                    if ($pseudoExists || $emailExists) {
-                        $message = "❌ Ce pseudo ou email est déjà utilisé.";
-                    } else {
-                        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                        $userManager->addUser($pseudo, $email, $hashedPassword);
-
-                        $message = "✅ Utilisateur $pseudo inscrit avec succès !";
-                    }
-                }
+        if ($pseudo && $email && $password && $password2) {
+            if ($password !== $password2) {
+                Session::addFlash("error", "❌ Les mots de passe ne correspondent pas.");
+            } elseif (strlen($password) < 6) {
+                Session::addFlash("error", "❌ Le mot de passe doit contenir au moins 6 caractères.");
             } else {
-                $message = "❌ Veuillez remplir tous les champs.";
-            }
+                $userManager = new UserManager();
 
-            return [
-                "view" => VIEW_DIR . "security/register.php",
-                "meta_description" => "Inscription sur le forum",
-                "data" => ["message" => $message]
-            ];
+                $pseudoExists = $userManager->findOneByPseudo($pseudo);
+                $emailExists = $userManager->findOneByEmail($email);
+
+                if ($pseudoExists || $emailExists) {
+                    Session::addFlash("error", "❌ Ce pseudo ou email est déjà utilisé.");
+                } else {
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    $userManager->addUser($pseudo, $email, $hashedPassword);
+
+                    Session::addFlash("success", "✅ Utilisateur $pseudo inscrit avec succès !");
+                    $this->redirectTo("security", "login");
+                }
+            }
+        } else {
+            Session::addFlash("error", "❌ Veuillez remplir tous les champs.");
         }
 
-        return [
-            "view" => VIEW_DIR . "security/register.php",
-            "meta_description" => "Inscription sur le forum"
-        ];
+        // En cas d'erreur, on revient sur la page d'inscription
+        $this->redirectTo("security", "register");
     }
+
+    // Si ce n’est pas une requête POST, on affiche le formulaire
+    return [
+        "view" => "security/register.php",
+        "meta_description" => "Inscription sur le forum"
+    ];
+}
 
     public function logout()
     {
@@ -100,7 +99,7 @@ class SecurityController extends AbstractController implements ControllerInterfa
         }
 
         return [
-            "view" => VIEW_DIR . "security/profile.php",
+            "view" => "security/profile.php",
             "meta_description" => "Profil de l'utilisateur",
             "data" => [
                 "user" => $user
@@ -123,7 +122,7 @@ class SecurityController extends AbstractController implements ControllerInterfa
         $users = $userManager->findAll();
 
         return [
-            "view" => VIEW_DIR . "security/users.php",
+            "view" => "security/users.php",
             "meta_description" => "Liste des utilisateurs inscrits",
             "data" => [
                 "users" => $users
@@ -138,7 +137,7 @@ class SecurityController extends AbstractController implements ControllerInterfa
         $user = $userManager->findOneById($id);
 
         return [
-            "view" => VIEW_DIR . "security/profile.php",
+            "view" => "security/profile.php",
             "meta_description" => "Profil d’un utilisateur",
             "data" => [
                 "user" => $user

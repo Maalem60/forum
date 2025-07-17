@@ -27,6 +27,19 @@ public function addUser($pseudo, $email, $passwordHash) {
     ]);
 }
 
+// ...existing code...
+
+public function findOneByEmail($email)
+{
+    $sql = "SELECT * FROM user WHERE email = :email";
+    return $this->getOneOrNullResult(
+        DAO::select($sql, ['email' => $email], false),
+        $this->className
+    );
+}
+
+// ...existing code...
+
 // Exemple dans UserManager.php
 
 public function findOneByPseudo($pseudo) {

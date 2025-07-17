@@ -1,5 +1,5 @@
 <?php
-namespace Controller;
+namespace controller;
 
 use App\AbstractController;
 use App\ControllerInterface;
@@ -9,7 +9,7 @@ class HomeController extends AbstractController implements ControllerInterface {
 
     public function index(){
         return [
-            "view" => VIEW_DIR."home.php",
+            "view" => "home.php",
             "meta_description" => "Page d'accueil du forum"
         ];
     }
@@ -21,7 +21,7 @@ class HomeController extends AbstractController implements ControllerInterface {
         $users = $manager->findAll(['register_date', 'DESC']);
 
         return [
-            "view" => VIEW_DIR."security/users.php",
+            "view" => "security/users.php",
             "meta_description" => "Liste des utilisateurs du forum",
             "data" => [ 
                 "users" => $users 

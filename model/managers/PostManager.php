@@ -24,5 +24,20 @@ public function findPostsByTopic($idTopic)
         \Model\Entities\Post::class
     );
 }
+public function addPost($content, $user_id, $topic_id)
+{
+    $sql = "INSERT INTO post (content, user_id, topic_id, creationDate)
+            VALUES (:content, :user_id, :topic_id, NOW())";
+
+    // On passe un seul tableau avec la requête et les paramètres
+    return DAO::insert([
+        "sql" => $sql,
+        "params" => [
+            "content" => $content,
+            "user_id" => $user_id,
+            "topic_id" => $topic_id
+        ]
+    ]);
+}
 
 }

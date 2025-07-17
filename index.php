@@ -1,8 +1,8 @@
 <?php
-namespace App;
+namespace App; // Déclare l'espace de noms "App" pour ce fichier, utile pour l'autoloading et éviter les conflits de noms
 
 
-
+// Définition de constantes utiles pour le projet
 define('DS', DIRECTORY_SEPARATOR); // le caractère séparateur de dossier (/ ou \)
 // meilleure portabilité sur les différents systêmes.
 define('BASE_DIR', dirname(__FILE__).DS); // pour simplifier la recherche au niveau de la racine.
@@ -12,31 +12,36 @@ define('PUBLIC_DIR', "public/");     //le chemin où se trouvent les fichiers pu
 define('DEFAULT_CTRL', 'Home');//nom du contrôleur par défaut
 define('ADMIN_MAIL', "admin@gmail.com");//mail de l'administrateur
 
-require("app/Autoloader.php");
+// Chargement automatique des classes
+require("app/Autoloader.php"); //inclusion de l'autoloader maison
+Autoloader::register(); // Enregistrement de l'autoloader PHP
 
-Autoloader::register();
 
 //démarre une session ou récupère la session actuelle
 session_start();
-require_once 'app/helpers.php';
-// Gestion personnalisée de l'historique de navigation
-$currentPage = $_SERVER['REQUEST_URI'];
 
-if (!isset($_SESSION['history'])) {
+require_once 'app/helpers.php'; // inclusion des fonctions d'aide (heplers.php)
+// -------------------------------------------------------
+// Gestion personnalisée de l'historique de navigation (stocké en session)
+// -------------------------------------------------------
+$currentPage = $_SERVER['REQUEST_URI']; // url actuelle visitée par l'utilisateur
+
+if (!isset($_SESSION['history'])) { // si aucune session d'historique n'existe encore, on initialise un tableau vide
     $_SESSION['history'] = [];
 }
-
+// si l'historique est vide OU que la dernière page enrgistrée est différente de la page actuelle
 if (empty($_SESSION['history']) || end($_SESSION['history']) !== $currentPage) {
-    $_SESSION['history'][] = $currentPage;
+    $_SESSION['history'][] = $currentPage; // On ajoute la page actuelle à l'historique
 }
 
-// Fonction pour récupérer la page précédente dans l'historique
+// Fonction utilitaire : retourne l'URL de la page précédente visitée
 function getPreviousPage() {
-    if (count($_SESSION['history']) > 1) {
-        array_pop($_SESSION['history']);
-        return end($_SESSION['history']);
+    if (count($_SESSION['history']) > 1) {  // S'il y a plus d'une page dans l'historique, on peut retourner à la précédente
+        array_pop($_SESSION['history']); // on retire la page actuelle
+        return end($_SESSION['history']); // On retourne celle juste avant (la page précédente)
+
     }
-    return 'index.php';
+    return 'index.php'; // sinon, on rtourne à l'accueil.
 }
 
 //et on intègre la classe Session qui prend la main sur les messages en session
@@ -68,11 +73,12 @@ if(isset($_GET['id'])){
 }
 else $id = null;
 //ex : HomeController->users(null)
+//------------
 $result = $ctrl->$action($id);
 if (!is_array($result)) {
     die("❌ La méthode $action() du contrôleur $ctrlNS ne retourne pas de tableau.");
 }
-
+$data = $result["data"] ?? [];
 
 /*--------CHARGEMENT PAGE--------*/
 if($action == "ajax"){ //si l'action était ajax
@@ -81,13 +87,11 @@ if($action == "ajax"){ //si l'action était ajax
 }
 else{
     ob_start();//démarre un buffer (tampon de sortie)
-    $meta_description = $result['meta_description'];
-    /* la vue s'insère dans le buffer qui devra être vidé au milieu du layout */
-    include($result['view']);
-    /* je place cet affichage dans une variable */
+    $meta_description = $data["meta_description"] ?? "";
+
+   
+    include(VIEW_DIR . $result['view']); // <- attention ici !
     $page = ob_get_contents();
-    /* j'efface le tampon */
     ob_end_clean();
-    /* j'affiche le template principal (layout) */
-    include VIEW_DIR."layout.php";
+    include "view\layout.php";
 }

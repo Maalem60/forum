@@ -35,4 +35,6 @@ $posts = $result["data"]["posts"] ?? [];
         <textarea name="content" required></textarea>
         <button type="submit">Envoyer</button>
     </form>
-    <?php endif; ?>
+<?php endif; ?>
+
+<a href="javascript:history.back()" class="retour">← Retour à la page précédente</a>
