@@ -15,6 +15,8 @@ define('ADMIN_MAIL', "admin@gmail.com");//mail de l'administrateur
 // Chargement automatique des classes
 require("app/Autoloader.php"); //inclusion de l'autoloader maison
 Autoloader::register(); // Enregistrement de l'autoloader PHP
+use App\DAO;
+DAO::connect(); // ✅ Connexion à la base de données
 
 
 //démarre une session ou récupère la session actuelle
@@ -72,7 +74,12 @@ if(isset($_GET['id'])){
     $id = $_GET['id'];
 }
 else $id = null;
-//ex : HomeController->users(null)
+//ex : HomeController->users(null)  vérification des résultats de la page addTopic et du formulaire
+//var_dump("Controller : $ctrlname");
+//var_dump("Action : $action");
+//var_dump("Id : ", $id);
+//var_dump($_POST);
+//die();
 //------------
 $result = $ctrl->$action($id);
 if (!is_array($result)) {

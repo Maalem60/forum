@@ -1,8 +1,9 @@
 <!-- view/forum/addTopic.php -->
 <h2>Créer un nouveau topic</h2>
+<?php $categories = $result["data"]["categories"]; ?>
 
 <form method="post" action="index.php?ctrl=forum&action=saveTopic">
-    <label for="title">Titre du topic :</label><br>
+<!--    <label for="title">Titre du topic :</label><br>
     <input type="text" id="title" name="title" required><br><br>
 
     <label for="category_id">Catégorie :</label><br>
@@ -15,7 +16,9 @@
     </select><br><br>
 
     <label for="content">Message :</label><br>
-    <textarea id="content" name="content" required></textarea><br><br>
+    <textarea id="content" name="content" class="tinymce" required></textarea>-->
 
-    <button type="submit">Créer</button>
+  
+
+    <button type="submit">Créer le Topic</button>
 </form>

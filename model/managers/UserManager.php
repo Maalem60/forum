@@ -38,6 +38,11 @@ public function findOneByEmail($email)
     );
 }
 
+public function banUser($userId)
+{
+    $sql = "UPDATE user SET banned = 1 WHERE id_user = :id";
+    return DAO::update($sql, ["id" => $userId]);
+}
 // ...existing code...
 
 // Exemple dans UserManager.php

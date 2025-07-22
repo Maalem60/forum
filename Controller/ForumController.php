@@ -73,26 +73,23 @@ public function addTopic()
     }
 public function saveTopic()
 {
+    var_dump($_POST); // pour vérifier que les données arrivent bien
+    die(); // pour stopper ici et voir le résultat
     // 1. Vérifier la connexion utilisateur
     if (!Session::isUserConnected()) {
         $this->redirectTo("security", "login");
     }
-
     // 2. Vérifier que les champs attendus existent dans $_POST
-    if (isset($_POST['title'], $_POST['category_id'], $_POST['content'])) {
-        
+    if (isset($_POST['title'], $_POST['category_id'], $_POST['content'])) {   
         // Nettoyage des données (trim pour éviter les espaces inutiles)
-        $title = trim($_POST['title']);
+        $title = filter_input($_POST['title']);
         $category_id = (int) $_POST['category_id'];
-        $content = trim($_POST['content']);
+        $content = filter_input($_POST['content']);
         $user_id = Session::getUserId();
-
         // Sécurité basique : ne pas continuer si un champ est vide
         if ($title && $category_id && $content) {
-
             $topicManager = new TopicManager();
             $postManager = new PostManager();
-
             // 3. Créer le topic
             $topicId = $topicManager->add([
                 "title" => $title,
@@ -100,7 +97,6 @@ public function saveTopic()
                 "category_id" => $category_id,
                 "creationDate" => date("Y-m-d H:i:s")
             ]);
-
             // 4. Créer le premier post
             $postManager->add([
                 "content" => $content,
@@ -108,7 +104,6 @@ public function saveTopic()
                 "topic_id" => $topicId,
                 "creationDate" => date("Y-m-d H:i:s")
             ]);
-
             // 5. Redirection vers le topic
             $this->redirectTo("forum", "listPostsByTopic", $topicId);
         }
@@ -121,15 +116,12 @@ public function saveTopic()
         $this->redirectTo("forum", "addTopic");
     }
 }
-
 public function listTopicsByCategory($id) {
 
         $topicManager = new TopicManager();
         $categoryManager = new CategoryManager();
         $category = $categoryManager->findOneById($id);
         $topics = $topicManager->findTopicsByCategory($id);
-
-  
 
         return [
             "view" => "forum/listTopics.php",
@@ -140,6 +132,17 @@ public function listTopicsByCategory($id) {
             ]
         ];
     }
+public function listAllTopics() {
+    $topicManager = new TopicManager();
+    $topics = $topicManager->findAllTopics();
+   
+    return [
+        "view" => "forum/listTopics.php",
+        "data" => [
+            "topics" => $topics
+        ]
+    ];
+}
 
 public function listPostsByTopic($id) {
 

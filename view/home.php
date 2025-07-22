@@ -1,13 +1,9 @@
 <h1>BIENVENUE SUR LE FORUM</h1>
 
-<p>Ce forum est destiné à promouvoir les activités des developpeurs web et d'echanger sur différents thèmes.  </p>
+<p>Ce forum est destiné à promouvoir les activités des développeurs web et à échanger sur différents thèmes.</p>
 
-<p>
-<?php if (isset($_SESSION['user'])): ?>
-    <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span> <?= htmlspecialchars($_SESSION['user']->getPseudo()) ?></a>
-    <a href="index.php?ctrl=security&action=logout">Déconnexion</a>
+<?php if (!App\Session::getUser()): ?>
+    <p>Pour participer aux discussions, <a href="index.php?ctrl=security&action=register">inscris-toi</a> ou <a href="index.php?ctrl=security&action=login">connecte-toi</a>.</p>
 <?php else: ?>
-    <a href="index.php?ctrl=security&action=login">Se connecter</a>
-    <a href="index.php?ctrl=security&action=register">S'inscrire</a>
+    <p>Heureux de te revoir sur le forum ! Tu peux <a href="index.php?ctrl=forum&action=addTopic">créer un topic</a> ou explorer les <a href="index.php?ctrl=forum&action=listAllTopics">discussions en cours</a>.</p>
 <?php endif; ?>
-</p>

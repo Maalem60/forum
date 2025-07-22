@@ -11,30 +11,37 @@ class SecurityController extends AbstractController implements ControllerInterfa
 {
     // Méthodes liées à l'authentification : register, login, logout
 
-    public function login()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+   public function login()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            $userManager = new UserManager();
-            $user = $userManager->findOneByPseudo($pseudo);
-
-            if ($user && password_verify($password, $user->getPassword())) {
-                session_start();
-                $_SESSION['user_id'] = $user->getId();
-                $this->redirectTo("forum", "index");
-            } else {
-                $message = "❌ Identifiants incorrects";
-            }
+        if (!$pseudo || !$password) {
+            Session::addFlash("error", "❌ Veuillez remplir tous les champs.");
+            $this->redirectTo("security", "login");
+            return;
         }
 
-        return [
-            "view" => "security/login.php",
-            "meta_description" => "Connexion à l'espace membre",
-            "data" => ["message" => $message ?? ""]
-        ];
+        $userManager = new UserManager();
+        $user = $userManager->findOneByPseudo($pseudo);
+
+        if ($user && password_verify($password, $user->getPassword())) {
+            session_start();
+            $_SESSION['user_id'] = $user->getId();
+            $this->redirectTo("forum", "index");
+        } else {
+            Session::addFlash("error", "❌ Identifiants incorrects");
+            $this->redirectTo("security", "login");
+        }
     }
+
+    return [
+        "view" => "security/login.php",
+        "meta_description" => "Connexion à l'espace membre"
+    ];
+}
+
 
     public function register()
 {

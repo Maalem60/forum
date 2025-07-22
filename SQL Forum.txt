@@ -1,0 +1,114 @@
+INSERT INTO topic (title, creationDate, user_id, category_id) 
+VALUES
+('Comment débuter en PHP ?', NOW(), 8, 1),
+('Structurer une page HTML proprement', NOW(), 9, 2),
+('Symfony ou Laravel ?', NOW(), 9, 3);
+
+
+INSERT INTO post (content, creationDate, user_id, topic_id)
+VALUES 
+('Commence par les variables, les conditions, les boucles…', NOW(), 9, 5),
+('Et installe XAMPP ou Laragon pour tester en local.', NOW(), 9, 5);
+
+INSERT INTO post (content, creationDate, user_id, topic_id)
+VALUES 
+('Pense à utiliser header, main, footer pour découper ton HTML.', NOW(), 8, 6),
+('Tu peux aussi te servir de Flexbox ou Grid en CSS.', NOW(), 8, 6);
+
+INSERT INTO post (content, creationDate, user_id, topic_id)
+VALUES 
+('Laravel est plus simple à prendre en main au début.', NOW(), 8, 7),
+('Symfony est plus puissant mais demande plus de configuration.', NOW(), 8, 7);
+
+
+UPDATE user SET roles = 'role_admin' WHERE id_user = 10;
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+Bannir un user :
+-------------
+
+// Dans UserController.php
+
+public function banUser() {
+    if (!Session::getUser()) {
+        Session::addFlash("error", "Vous devez être connecté pour bannir un utilisateur.");
+        $this->redirectTo("security", "login");
+        return;
+    }
+
+    if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
+        $userId = (int)$_GET['id'];
+        $this->getManagerOf("User")->banUser($userId);
+        Session::addFlash("success", "Utilisateur banni avec succès.");
+    }
+
+    $this->redirectTo("forum", "listTopics");
+}
+
+
+dans UserManager.php
+
+public function banUser(int $id): void {
+    $sql = "UPDATE user SET banned = 1 WHERE id_user = :id";
+    $this->getBdd()->prepare($sql)->execute(['id' => $id]);
+}
+
+SecurityController.php
+
+public function banUser() {
+    if (!Session::getUser()) {
+        Session::addFlash("error", "Vous devez être connecté pour bannir un utilisateur.");
+        $this->redirectTo("security", "login");
+        return;
+    }
+
+    if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
+        $userId = (int)$_GET['id'];
+        $this->getManagerOf("User")->banUser($userId);
+        Session::addFlash("success", "Utilisateur banni avec succès.");
+    }
+
+    $this->redirectTo("forum", "listTopics");
+}
+
+C’est plus propre pour organiser les actions utilisateurs.
+
+Dans controller/UserController.php :
+
+<?php
+namespace Controller;
+
+use App\AbstractController;
+use App\Session;
+
+class UserController extends AbstractController
+{
+    public function banUser()
+    {
+        if (!Session::getUser()) {
+            Session::addFlash("error", "Vous devez être connecté pour bannir un utilisateur.");
+            $this->redirectTo("security", "login");
+            return;
+        }
+
+        if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
+            $userId = (int)$_GET['id'];
+            $this->getManagerOf("User")->banUser($userId);
+            Session::addFlash("success", "Utilisateur banni avec succès.");
+        }
+
+        $this->redirectTo("forum", "listTopics");
+    }
+}
+
+Index.php 
+
+if ($ctrl === 'user' && $action === 'banUser') {
+    (new \Controller\UserController())->banUser();
+}
+ view/ 
+
+<a href="index.php?ctrl=user&action=banUser&id=<?= $user->getId() ?>">Bannir</a>
+
