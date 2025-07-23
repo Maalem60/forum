@@ -1,5 +1,7 @@
 <?php
+
 namespace App;
+use Model\Managers\UserManager; 
 
 class Session {
 
@@ -14,25 +16,25 @@ class Session {
     // ---------------------------
 
     public static function isUserConnected(): bool {
-        self::start();
-        return isset($_SESSION['user_id']);
-    }
+         self::start();
+       return isset($_SESSION['user_id']);
+     }
 
     public static function setUser($user) {
-        self::start();
+       ;
         $_SESSION['user_id'] = $user->getId();
     }
 
-    public static function getUserId() {
-        self::start();
-        return $_SESSION['user_id'] ?? null;
-    }
+    // public static function getUserId() {
+    //     self::start();
+    //     return $_SESSION['user_id'] ?? null;
+    // }
 
     public static function getUser() {
-        self::start();
+   
         if (!isset($_SESSION['user_id'])) return null;
 
-        $userManager = new \Model\Managers\UserManager();
+        $userManager = new UserManager();
         return $userManager->findOneById($_SESSION['user_id']);
     }
 

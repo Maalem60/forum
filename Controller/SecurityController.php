@@ -62,11 +62,13 @@ class SecurityController extends AbstractController implements ControllerInterfa
                 $pseudoExists = $userManager->findOneByPseudo($pseudo);
                 $emailExists = $userManager->findOneByEmail($email);
 
+                $role = 'ROLE_USER';
+
                 if ($pseudoExists || $emailExists) {
                     Session::addFlash("error", "❌ Ce pseudo ou email est déjà utilisé.");
                 } else {
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                    $userManager->addUser($pseudo, $email, $hashedPassword);
+                    $userManager->addUser($pseudo, $email, $hashedPassword, $role);
 
                     Session::addFlash("success", "✅ Utilisateur $pseudo inscrit avec succès !");
                     $this->redirectTo("security", "login");

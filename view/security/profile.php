@@ -7,11 +7,11 @@ if (isset($data['user'])):
 <p><strong>Email :</strong> <?= htmlspecialchars($user->getEmail()) ?></p>
 <button onclick="history.back()">← Retour</button>
 <!-- On enlève l'affichage du rôle tant que ce n'est pas géré -->
-<!-- <p><strong>Rôle :</strong> <?= htmlspecialchars($user->getRole()) ?></p> -->
+<!--<p><strong>Rôle :</strong> <?= htmlspecialchars($user->getRole()) ?></p>-->
 
 <!-- Section admin commentée -->
-<!--
-<?php if ($user->getRole() === 'admin'): ?>
+
+<?php if ($user->getRole() === 'ROLE_ADMIN'): ?>
     <h3>Section administrateur</h3>
     <p>Vous avez des privilèges d'administrateur.</p>
     <ul>
@@ -19,7 +19,7 @@ if (isset($data['user'])):
         <li><a href="index.php?ctrl=admin&action=manageTopics">Gérer les topics</a></li>
     </ul>
 <?php endif; ?>
--->
+
 
 <p><a href="index.php?ctrl=security&action=logout">Déconnexion</a></p>
 

@@ -52,6 +52,9 @@ public function addPost() {
 
 public function addTopic()
     {
+       // var_dump($_POST);
+       // exit;
+
         // Vérifier si utilisateur connecté
         if (!Session::isUserConnected()) {
             // Redirection vers login
@@ -69,43 +72,46 @@ public function addTopic()
     ];
 
         // Sinon, afficher la vue formulaire d'ajout de topic
-      //  $this->render('forum/addTopic');
+       // $this->render('forum/addTopic');
     }
 public function saveTopic()
 {
-    var_dump($_POST); // pour vérifier que les données arrivent bien
-    die(); // pour stopper ici et voir le résultat
+
     // 1. Vérifier la connexion utilisateur
-    if (!Session::isUserConnected()) {
-        $this->redirectTo("security", "login");
-    }
+     if (!Session::isUserConnected()) {
+         $this->redirectTo("security", "login");
+     }
     // 2. Vérifier que les champs attendus existent dans $_POST
-    if (isset($_POST['title'], $_POST['category_id'], $_POST['content'])) {   
-        // Nettoyage des données (trim pour éviter les espaces inutiles)
-        $title = filter_input($_POST['title']);
-        $category_id = (int) $_POST['category_id'];
-        $content = filter_input($_POST['content']);
-        $user_id = Session::getUserId();
+     if (isset($_POST['title'], $_POST['category_id'], $_POST['content'])) {  
+        if (isset($_POST['title'])) {  
+        // filter_input pour sécuriser les données
+        $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $category_id = filter_input(INPUT_POST,"category_id", FILTER_VALIDATE_INT);
+        $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        //  $user_id = Session::getUserId();
         // Sécurité basique : ne pas continuer si un champ est vide
-        if ($title && $category_id && $content) {
+         if ($title && $category_id && $content) {
+                
             $topicManager = new TopicManager();
             $postManager = new PostManager();
             // 3. Créer le topic
-            $topicId = $topicManager->add([
+            $topic = $topicManager->add([
                 "title" => $title,
-                "user_id" => $user_id,
-                "category_id" => $category_id,
-                "creationDate" => date("Y-m-d H:i:s")
+                 "category_id" => $category_id,
+                 "user_id" => Session::getUser()->getId(),
+               
             ]);
             // 4. Créer le premier post
-            $postManager->add([
+             $postManager->add([
                 "content" => $content,
-                "user_id" => $user_id,
-                "topic_id" => $topicId,
-                "creationDate" => date("Y-m-d H:i:s")
-            ]);
+                "user_id" => Session::getUser()->getId(),
+                "topic_id" => $topic,
+      
+             ]);
+     
+        
             // 5. Redirection vers le topic
-            $this->redirectTo("forum", "listPostsByTopic", $topicId);
+            $this->redirectTo("forum", "listAllTopics");
         }
         else {
             Session::addFlash("error", "Tous les champs sont obligatoires.");
@@ -116,6 +122,8 @@ public function saveTopic()
         $this->redirectTo("forum", "addTopic");
     }
 }
+}
+    
 public function listTopicsByCategory($id) {
 
         $topicManager = new TopicManager();

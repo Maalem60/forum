@@ -11,10 +11,10 @@ class User extends Entity {
     private $password;
     private $creationDate;
     private $avatar;
-    private $roles;  // Ajout de la propriété des rôles
+    private $role;  // Ajout de la propriété des rôles
 
     public function __construct($data) { 
-        $this->roles = []; // initialiser les roles de chacun ici.       
+       // $this->role = []; // initialiser les roles de chacun ici.       
         $this->hydrate($data);        
     }
 
@@ -74,18 +74,17 @@ class User extends Entity {
 
     // Méthode pour vérifier si l'utilisateur a un rôle spécifique
     // Gestion des rôles
-    public function getRoles() {
-        return $this->roles;
+    public function getRole() {
+        return $this->role;
     }
-
-    public function addRole($role) {
-        if (!in_array($role, $this->roles)) {
-            $this->roles[] = $role;
-        }
-    }
-
+public function setRole($role) {
+    $this->role = $role;
+    return $this;
+}
     public function hasRole($role) { // Vérifier si le rôle existe dans le tableau des rôles
-        return in_array($role, $this->roles);
+      if($this->role == $role) {
+        return true;
+      }
     }
 
 

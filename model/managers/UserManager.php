@@ -14,20 +14,23 @@ class UserManager extends Manager{
 public function __construct(){
         parent::connect();
     }
+    
     // ajouter un utilisateur
-public function addUser($pseudo, $email, $passwordHash) {
+public function addUser($pseudo, $email, $passwordHash, $role) {
     // Assurons-nous que la colonne dans la BDD s'appelle bien `pseudo` et pas `username`
-    $sql = "INSERT INTO ".$this->tableName." (pseudo, email, password, creationDate) 
-            VALUES (:pseudo, :email, :password, NOW())";  // Utilisation de `NOW()` pour l'ajout de la date de création
+    $sql = "INSERT INTO ".$this->tableName." (pseudo, email, password, roles) 
+            VALUES (:pseudo, :email, :password, :roles)";  // Utilisation de `NOW()` pour l'ajout de la date de création
     
     return $this->add([
         'pseudo' => $pseudo,
         'email' => $email,
-        'password' => $passwordHash
+        'password' => $passwordHash,
+        'roles' => $role
     ]);
 }
 
 // ...existing code...
+
 
 public function findOneByEmail($email)
 {

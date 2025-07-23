@@ -30,6 +30,19 @@ header {
     border-radius: var(--radius);
     margin-bottom: 30px;
 }
+.logo {
+  display: flex;
+  flex-direction: column; /* empile verticalement */
+  align-items: center;    /* centre horizontalement */
+  justify-content: center; /* centre verticalement si tu as une hauteur */
+  text-align: center;     /* centre le texte à l’intérieur */
+}
+.logo-img {
+  height: 60px;       /* ou 30px selon la barre de navigation */
+  width: auto;        /* garder les proportions */
+  display: block;
+  border-radius: 50%;
+}
 
 nav.navbar {
     max-width: 1000px;
@@ -42,10 +55,11 @@ nav.navbar {
 }
 
 nav .logo a {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 500;
     color: white;
     text-decoration: none;
+    
 }
 
 .nav-center {

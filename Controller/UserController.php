@@ -6,6 +6,13 @@ use App\Session;
 
 class UserController extends AbstractController
 {
+public function listUsers()
+{
+    $userManager = new \Model\Managers\UserManager();
+    $users = $userManager->findAll();
+
+    $this->render('user/listUsers', ['users' => $users]);
+}
 
 public function banUser()
 {

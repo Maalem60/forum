@@ -1,7 +1,6 @@
 <?php
 namespace App; // Déclare l'espace de noms "App" pour ce fichier, utile pour l'autoloading et éviter les conflits de noms
 
-
 // Définition de constantes utiles pour le projet
 define('DS', DIRECTORY_SEPARATOR); // le caractère séparateur de dossier (/ ou \)
 // meilleure portabilité sur les différents systêmes.
@@ -74,13 +73,12 @@ if(isset($_GET['id'])){
     $id = $_GET['id'];
 }
 else $id = null;
-//ex : HomeController->users(null)  vérification des résultats de la page addTopic et du formulaire
-//var_dump("Controller : $ctrlname");
-//var_dump("Action : $action");
-//var_dump("Id : ", $id);
+//var_dump("Controller : " . $ctrlname);
+//var_dump("Action : " . $action);
+//var_dump("Id : " . $id);
 //var_dump($_POST);
 //die();
-//------------
+
 $result = $ctrl->$action($id);
 if (!is_array($result)) {
     die("❌ La méthode $action() du contrôleur $ctrlNS ne retourne pas de tableau.");

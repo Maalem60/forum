@@ -13,13 +13,15 @@
 <header>
     <nav class="navbar">
         <div class="logo">
-            <a href="index.php?ctrl=home&action=index">FORUM</a>
+            
+            <img src="public/img/Logo2Forum.jpg" alt="Logo Forum" class="logo-img">
+            <a href="index.php?ctrl=home&action=index">Web Forum</a>
         </div>
 
         <div class="nav-center">
             <a href="index.php?ctrl=forum&action=index">Catégories</a>
             <a href="index.php?ctrl=forum&action=listAllTopics">Tous les topics</a>
-            <?php if (\App\Session::isUserConnected()): ?>
+            <?php if (\App\Session::getUser()): ?>
                 <a href="index.php?ctrl=forum&action=addTopic">Créer un topic</a>
             <?php endif; ?>
             <?php if (App\Session::isAdmin()): ?>
@@ -34,7 +36,7 @@
                 <a href="index.php?ctrl=security&action=profile">
                     <span class="fas fa-user"></span> <?= htmlspecialchars((string)(App\Session::getUser() ?? '')) ?>
                 </a>
-                <a href="index.php?ctrl=security&action=logout">Déconnexion</a>
+                <a href="index.php?ctrl=security&action=logout">Déconnexion</a> 
             <?php else: ?>
                 <a href="index.php?ctrl=security&action=login">Connexion</a>
                 <a href="index.php?ctrl=security&action=register">Inscription</a>
