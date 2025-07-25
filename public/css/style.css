@@ -1,3 +1,6 @@
+/* ========================
+   Root Variables
+========================= */
 :root {
     --bg-color: #f7fafc;
     --primary-color: #2a8bf2;
@@ -7,9 +10,13 @@
     --card-bg: #fff;
     --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     --radius: 12px;
+    --footer-bg: #dfefff; /* Fond clair du pied de page */
+    --footer-text: #000000; /* Couleur du texte du pied de page */
 }
 
-/* Reset */
+/* ========================
+   Reset navigateur
+========================= */
 * {
     margin: 0;
     padding: 0;
@@ -24,26 +31,34 @@ body {
     padding: 20px;
 }
 
+/* ========================
+   En-tête (header)
+========================= */
 header {
     background-color: var(--primary-color);
     color: white;
     border-radius: var(--radius);
     margin-bottom: 30px;
 }
+
 .logo {
-  display: flex;
-  flex-direction: column; /* empile verticalement */
-  align-items: center;    /* centre horizontalement */
-  justify-content: center; /* centre verticalement si tu as une hauteur */
-  text-align: center;     /* centre le texte à l’intérieur */
-}
-.logo-img {
-  height: 60px;       /* ou 30px selon la barre de navigation */
-  width: auto;        /* garder les proportions */
-  display: block;
-  border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
+.logo-img {
+    height: 60px;
+    width: auto;
+    display: block;
+    border-radius: 50%;
+}
+
+/* ========================
+   Navigation
+========================= */
 nav.navbar {
     max-width: 1000px;
     margin: 0 auto;
@@ -59,7 +74,6 @@ nav .logo a {
     font-weight: 500;
     color: white;
     text-decoration: none;
-    
 }
 
 .nav-center {
@@ -89,30 +103,30 @@ nav .logo a {
     opacity: 0.8;
 }
 
-/* Main content */
+/* ========================
+   Contenu principal (forum)
+========================= */
 main#forum {
-    background-image: url('/forumPlateau_V2bis/public/img/Forum9.jpg');/* adapter le chemin */
+    background-image: url('/forumPlateau_V2bis/public/img/Forum9.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* optionnel pour atténuer ou fondre l'image */
     background-color: rgba(255, 255, 255, 0.5);
     background-blend-mode: lighten;
     padding: 2rem;
     border-radius: 1rem;
 }
 
-
-/* Messages flash */
+/* ========================
+   Messages flash
+========================= */
 .message {
     display: none;
     padding: 1rem 1.5rem;
     border-radius: var(--radius);
-    margin-bottom: 20px;
+    margin: 0 auto 20px;
     font-weight: 600;
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .message.error {
@@ -125,7 +139,9 @@ main#forum {
     color: #0f5132;
 }
 
-/* Form styling */
+/* ========================
+   Formulaires
+========================= */
 form {
     background-color: var(--card-bg);
     padding: 2rem;
@@ -168,13 +184,16 @@ form button:hover,
 form input[type="submit"]:hover {
     background-color: #ffc46c;
 }
-/* Bouton retour */
+
+/* ========================
+   Bouton retour
+========================= */
 .retour {
     display: inline-block;
     margin: 1em 0;
     padding: 10px 16px;
-    background-color: #ffc46c; /* jaune clair */
-    color: #331c00;            /* texte foncé */
+    background-color: #ffc46c;
+    color: #331c00;
     text-decoration: none;
     border: none;
     border-radius: var(--radius);
@@ -183,8 +202,12 @@ form input[type="submit"]:hover {
 }
 
 .retour:hover {
-    background-color: #ffaa00; /* un jaune un peu plus foncé au survol */
+    background-color: #ffaa00;
 }
+
+/* ========================
+   Cartes de catégories
+========================= */
 .topics-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -193,9 +216,9 @@ form input[type="submit"]:hover {
 }
 
 .category-card {
-    background-color: var(--card-bg, #fff);
-    box-shadow: var(--card-shadow, 0 2px 8px rgba(0, 0, 0, 0.08));
-    border-radius: var(--radius, 10px);
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border-radius: var(--radius);
     padding: 1.5rem;
     transition: transform 0.2s ease;
 }
@@ -210,24 +233,26 @@ form input[type="submit"]:hover {
 }
 
 .category-card a {
-    color: var(--primary-color, #2a8bf2);
+    color: var(--primary-color);
     text-decoration: none;
 }
 
 .category-card a:hover {
     text-decoration: underline;
 }
-/* Réduit l’impact visuel des encadrés de message */
+
+/* ========================
+   Messages des utilisateurs
+========================= */
 .post-card {
-    background-color: #2a8bf2;   /* Couleur très claire */
+    background-color: #2a8bf2;
     border: 1px solid #ccc;
     border-radius: 6px;
     padding: 10px 15px;
     margin-bottom: 15px;
-    box-shadow: none; /* Supprime les effets trop prononcés */
+    box-shadow: none;
 }
 
-/* Style du bandeau contenant l’auteur et la date */
 .post-header {
     background-color: #eee;
     padding: 5px 10px;
@@ -237,27 +262,138 @@ form input[type="submit"]:hover {
     margin-bottom: 8px;
 }
 
-/* Optionnel : couleur du pseudo de l’auteur */
 .post-user {
     font-weight: bold;
     color: #2a8bf2;
 }
 
-/* Footer */
+/* ========================
+   Pied de page (footer)
+========================= */
 footer {
-    max-width: 1000px;
-    margin: 0 auto;
-    margin-top: 40px;
+    
+    
     text-align: center;
     font-size: 0.9rem;
-    color: #666;
+    color: var(--footer-text);
     border-top: 1px solid #ddd;
     padding-top: 15px;
-    
 }
 
+.footer-content {
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: var(--footer-bg);
+    border-top: 1px solid #ccc;
+    flex-wrap: wrap;
+}
 
-/* Responsive */
+.footer-logo {
+    display: flex;
+    align-items: center;
+}
+
+.footer-logo-img {
+    width: 40px;
+    height: auto;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-align: center;
+}
+
+.footer-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+/*=============================================================
+ Section mentions légales 
+===============================================================*/
+ .legal {
+    max-width: 800px;           /* largeur confortable de lecture */
+    margin: 2rem auto 4rem;     /* marge centrée et espacée */
+    padding: 1.5rem 2rem;       /* respiration intérieure */
+    background-color: var(--card-bg); /* blanc ou clair selon ta variable */
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    color: var(--text-color);
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Titres */
+  .legal h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  
+  .legal h2 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+  
+  /* Paragraphes */
+  .legal p {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  /* Liens */
+  .legal a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+  
+  .legal a:hover,
+  .legal a:focus {
+    color: var(--hover-color);
+    outline: none;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .legal {
+      padding: 1rem 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .legal h1 {
+      font-size: 1.5rem;
+    }
+    
+    .legal h2 {
+      font-size: 1.1rem;
+    }
+  }
+  
+
+/* ========================
+   Responsive
+========================= */
 @media (max-width: 768px) {
     nav.navbar {
         flex-direction: column;
@@ -267,7 +403,6 @@ footer {
     .nav-center {
         justify-content: flex-start;
         margin-top: 10px;
-        flex-wrap: wrap;
     }
 
     .nav-right {

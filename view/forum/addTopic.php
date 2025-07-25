@@ -14,7 +14,7 @@
         <?php endforeach; ?>
     </select><br><br>
     <label for="content">Message :</label><br>
-    <!--<textarea id="content" name="content" class="tinymce" required></textarea>-->
- <textarea id="content" name="content" ></textarea>
+    <!--<textarea id="content" name="content" class="tinymce" required></textarea>--> 
+    <textarea id="content" name="content" ></textarea>
     <button type="submit" name="submit">Créer le Topic</button>    
 </form>

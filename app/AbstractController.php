@@ -24,13 +24,17 @@ public function redirectTo($ctrl = null, $action = null, $id = null){
         die();
     }
 
-public function restrictTo($role){
-        
-        if(!Session::getUser() || !Session::getUser()->hasRole($role)){
+    protected function restrictTo($role): void
+    {
+        $user = Session::getUser();
+    
+        if (!$user || !method_exists($user, 'hasRole') || !$user->hasRole($role)) {
             $this->redirectTo("security", "login");
+            exit;
         }
-        return;
     }
+    
+
  //  AJOUT DE LA MÉTHODE "render", permet de ne pas avoir à répéter cette structure à chaque fois. ICI 👉
 public function render(string $view, array $data = [], string $meta = "")
 {

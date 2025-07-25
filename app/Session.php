@@ -25,10 +25,10 @@ class Session {
         $_SESSION['user_id'] = $user->getId();
     }
 
-    // public static function getUserId() {
-    //     self::start();
-    //     return $_SESSION['user_id'] ?? null;
-    // }
+     public static function getUserId() {
+         self::start();
+         return $_SESSION['user_id'] ?? null;
+     }
 
     public static function getUser() {
    
@@ -38,11 +38,18 @@ class Session {
         return $userManager->findOneById($_SESSION['user_id']);
     }
 
-    public static function isAdmin() {
-        $user = self::getUser();
-        return $user && $user->hasRole("ROLE_ADMIN");
+    public static function isAdmin()
+    {
+       // Vérifie si un utilisateur est connecté et a le role ADMIN : "ROLE_ADMIN"
+        if (self::getUser() && self::getUser()->getRole() === "ROLE_ADMIN") {
+            // self::getUser(): récupère l'utilisateur actellement connecté (stocke dans la session.)
+            // getRole() : récupère le role de cet utilisateur === même valeur, même type.
+              
+            return true;
+        }
+        return false;
+        // sinon retourne False.
     }
-
     public static function destroy() {
         self::start();
         $_SESSION = [];
