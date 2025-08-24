@@ -1,39 +1,43 @@
 <?php
 namespace App;
 
-abstract class Entity{
+abstract class Entity {
 
-    protected function hydrate($data){
+    protected function hydrate($data) {
+        if (!is_array($data)) {
+            return; // sécurise contre null ou non-tableau
+        }
 
-        foreach($data as $field => $value){
-            // field = topic_id
-            // fieldarray = ['topic','id']
+        foreach ($data as $field => $value) {
+            // Gestion des relations *_id
             $fieldArray = explode("_", $field);
 
-            if(isset($fieldArray[1]) && $fieldArray[1] == "id"){
-                // manName = TopicManager 
-                $manName = ucfirst($fieldArray[0])."Manager";
-                // FQCName = Model\Managers\TopicManager;
-                $FQCName = "Model\Managers\\".$manName;
-                
-                // man = new Model\Managers\TopicManager
-                $man = new $FQCName();
-                // value = Model\Managers\TopicManager->findOneById(1)
-                $value = $man->findOneById($value);
+            if (isset($fieldArray[1]) && $fieldArray[1] === "id") {
+                $manName = ucfirst($fieldArray[0]) . "Manager";
+                $FQCName = "Model\\Managers\\" . $manName;
+
+                if (class_exists($FQCName)) {
+                    $man = new $FQCName();
+                    $value = $man->findOneById($value);
+                }
             }
 
-            // fabrication du nom du setter à appeler (ex: setName)
-            $method = "set".ucfirst($fieldArray[0]);
-            
-            // si setName est une méthode qui existe dans l'entité (this)
-            if(method_exists($this, $method)){
-                // $this->setName("valeur")
+            // Fabrication du setter
+            $method = "set" . ucfirst($fieldArray[0]);
+
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
     }
 
-    public function getClass(){
+    public function __construct($data = []) {
+        if (is_array($data) && !empty($data)) {
+            $this->hydrate($data);
+        }
+    }
+
+    public function getClass() {
         return get_class($this);
     }
 }

@@ -34,4 +34,5 @@
         Les messages publiés sur le forum sont sous la responsabilité de leurs auteurs.<br>
         L’équipe de modération se réserve le droit de supprimer tout contenu contraire à la loi ou aux règles du forum.
     </p>
+     <a href="/webforum/" class="retour">← Retour à l’accueil</a>
 </section>

@@ -9,10 +9,13 @@ class UserController extends AbstractController
 {
 public function listUsers()
 {
-    $userManager = new \Model\Managers\UserManager();
+    // Bloque l'accès si l'utilisateur n'est pas admin
+    $this->restrictTo("ROLE_ADMIN");
+
+    $userManager = new UserManager();
     $users = $userManager->findAll();
 
-    $this->render('user/listUsers', ['users' => $users]);
+    $this->render('security/user', ['users' => $users]);
 }
 
 public function banUser()

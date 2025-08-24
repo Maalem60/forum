@@ -107,7 +107,7 @@ nav .logo a {
    Contenu principal (forum)
 ========================= */
 main#forum {
-    background-image: url('/forumPlateau_V2bis/public/img/Forum9.jpg');
+    background-image: url('/webforum/public/img/Forum9.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
