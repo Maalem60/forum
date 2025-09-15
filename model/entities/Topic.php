@@ -85,6 +85,10 @@ final class Topic extends Entity{
         $this->user = $user;
         return $this;
     }
+    public function isClosed(): bool {
+        return $this->closed ?? false;
+    }
+    
   public function getClosed(){
         return $this->closed;
     }

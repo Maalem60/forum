@@ -389,7 +389,143 @@ footer p {
       font-size: 1.1rem;
     }
   }
-  
+  /* ========================
+   Gestion des Posts (table et cartes)
+========================= */
+
+/* Conteneur principal de la liste des posts */
+.posts-table-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+}
+
+/* Titre de la page */
+.posts-table-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* Table de posts */
+.posts-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* En-tête */
+.posts-table-container table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.posts-table-container table thead th {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Lignes du tableau */
+.posts-table-container table tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s ease;
+}
+
+.posts-table-container table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Cellules */
+.posts-table-container table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+/* Actions (liens) */
+.posts-table-container table td a {
+    margin-right: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.posts-table-container table td a:hover {
+    color: var(--hover-color);
+}
+
+/* Emoji verrouillage */
+.posts-table-container table td a::before {
+    margin-right: 3px;
+}
+
+/* Bouton retour */
+.posts-table-container .retour {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 10px 16px;
+    background-color: var(--accent-color);
+    color: #331c00;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.posts-table-container .retour:hover {
+    background-color: #ffaa00;
+}
+
+/* Responsive table → passage en bloc sur petits écrans */
+@media (max-width: 768px) {
+    .posts-table-container table, 
+    .posts-table-container table thead, 
+    .posts-table-container table tbody, 
+    .posts-table-container table th, 
+    .posts-table-container table td, 
+    .posts-table-container table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .posts-table-container table thead {
+        display: none;
+    }
+
+    .posts-table-container table tbody tr {
+        margin-bottom: 1.5rem;
+        background-color: var(--card-bg);
+        border: 1px solid #ddd;
+        border-radius: var(--radius);
+        padding: 10px;
+    }
+
+    .posts-table-container table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border: none;
+    }
+
+    .posts-table-container table tbody td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .posts-table-container .retour {
+        width: 100%;
+        text-align: center;
+    }
+}
+
 
 /* ========================
    Responsive

@@ -10,15 +10,19 @@ namespace App;
     -- permettent de fournir une certaine implémentation de base.
 */
 
-abstract class AbstractController{
+abstract class AbstractController
+{
 
-public function index() {}
+    public function index()
+    {
+    }
 
-public function redirectTo($ctrl = null, $action = null, $id = null){
+    public function redirectTo($ctrl = null, $action = null, $id = null)
+    {
 
-        $url = $ctrl ? "?ctrl=".$ctrl : "";
-        $url.= $action ? "&action=".$action : "";
-        $url.= $id ? "&id=".$id : "";
+        $url = $ctrl ? "?ctrl=" . $ctrl : "";
+        $url .= $action ? "&action=" . $action : "";
+        $url .= $id ? "&id=" . $id : "";
 
         header("Location: $url");
         die();
@@ -27,27 +31,29 @@ public function redirectTo($ctrl = null, $action = null, $id = null){
     protected function restrictTo($role): void
     {
         $user = Session::getUser();
-    
+
         if (!$user || !method_exists($user, 'hasRole') || !$user->hasRole($role)) {
             $this->redirectTo("security", "login");
             exit;
         }
     }
-    
 
- //  AJOUT DE LA MÉTHODE "render", permet de ne pas avoir à répéter cette structure à chaque fois. ICI 👉
-public function render(string $view, array $data = [], string $meta = "")
-{
-    // Rend les variables du tableau $data disponibles directement dans la vue
-    extract($data);
 
-    // Capture le contenu généré par la vue
-    ob_start();
-    require VIEW_DIR . $view . ".php";
-    $page = ob_get_clean();
+    //  AJOUT DE LA MÉTHODE "render", permet de ne pas avoir à répéter cette structure à chaque fois. ICI 👉
+    public function render(string $view, array $data = [], string $meta = "")
+    {
+        // Rend les variables du tableau $data disponibles directement dans la vue
+        extract($data);
 
-    // Inclut le layout principal, qui contient le header, le footer, etc.
-    require VIEW_DIR . "layout.php";
-}
+        // Capture le contenu généré par la vue
+        ob_start();
+        require VIEW_DIR . $view . ".php";
+        $page = ob_get_clean();
+        // Passe la méta-description au layout
+        $meta_description = $meta;
+
+        // Inclut le layout principal, qui contient le header, le footer, etc.
+        require VIEW_DIR . "layout.php";
+    }
 
 }

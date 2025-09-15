@@ -34,5 +34,26 @@
         Les messages publiés sur le forum sont sous la responsabilité de leurs auteurs.<br>
         L’équipe de modération se réserve le droit de supprimer tout contenu contraire à la loi ou aux règles du forum.
     </p>
-     <a href="/webforum/" class="retour">← Retour à l’accueil</a>
+    <style>
+    body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 0 1em;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #0077b6;
+            text-align: center;
+        }
+        a {
+            color: #26569e;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </section>
+<a href="javascript:history.back()" class="retour">← Retour à la page précédente</a>
+

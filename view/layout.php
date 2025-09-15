@@ -81,7 +81,7 @@ $user = Session::getUser();  // <- ici la variable $user est définie. Ainsi, $u
             <a href="index.php?ctrl=home&action=index" class="footer-title">Web Forum</a>
         </div>
         <div class="footer-right">
-            <p>&copy; <?= date('Y') ?> - <a href="#">Règlement du forum</a> - <a href="mentionsLegales.php">Mentions légales</a></p>
+            <p>&copy; <?= date('Y') ?> - <a href="politique_confidentialité.html">politique de confidentialité</a> - <a href="mentionsLegales.php">Mentions légales</a></p>
         </div>
     </div>
 </footer>

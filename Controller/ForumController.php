@@ -29,6 +29,13 @@ public function index() {
    
 public function addPost() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && Session::getUser()) {
+           // Vérification CSRF
+           if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            Session::addFlash("error", "Jeton CSRF invalide. Rechargement de la page nécessaire.");
+            $this->redirectTo("forum", "listPostsByTopic", $_GET['id'] ?? null);
+            return;
+        }
+
         $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $id_topic = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         $id_user = Session::getUser()->getId();
@@ -74,55 +81,64 @@ public function addTopic()
         // Sinon, afficher la vue formulaire d'ajout de topic
        // $this->render('forum/addTopic');
     }
-public function saveTopic()
-{
-
-    // 1. Vérifier la connexion utilisateur
-     if (!Session::isUserConnected()) {
-         $this->redirectTo("security", "login");
-     }
-    // 2. Vérifier que les champs attendus existent dans $_POST
-     if (isset($_POST['title'], $_POST['category_id'], $_POST['content'])) {  
-        if (isset($_POST['title'])) {  
-        // filter_input pour sécuriser les données
-        $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-        $category_id = filter_input(INPUT_POST,"category_id", FILTER_VALIDATE_INT);
-        $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        //  $user_id = Session::getUserId();
-        // Sécurité basique : ne pas continuer si un champ est vide
-         if ($title && $category_id && $content) {
-                
+    public function saveTopic()
+    {
+        // 1️ Vérifier la connexion utilisateur
+        if (!Session::isUserConnected()) {
+            $this->redirectTo("security", "login");
+        }
+    
+        // 2️ Vérifier le POST et le token CSRF
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $token_post = $_POST['csrf_token'] ?? '';
+            $token_session = $_SESSION['csrf_token'] ?? '';
+    
+            if (!hash_equals($token_session, $token_post)) {
+                Session::addFlash("error", "Jeton CSRF invalide. Rechargement nécessaire.");
+                $this->redirectTo("forum", "addTopic");
+                return;
+            }
+    
+            // Optionnel : régénérer le token pour éviter la réutilisation
+            unset($_SESSION['csrf_token']);
+    
+            // 3 Récupération et sanitation des données
+            $title = filter_input(INPUT_POST, "title", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $category_id = filter_input(INPUT_POST, "category_id", FILTER_VALIDATE_INT);
+            $content = filter_input(INPUT_POST, "content", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    
+            if (!$title || !$category_id || !$content) {
+                Session::addFlash("error", "Tous les champs sont obligatoires.");
+                $this->redirectTo("forum", "addTopic");
+                return;
+            }
+    
+            // 4️ Création du topic via TopicManager
             $topicManager = new TopicManager();
             $postManager = new PostManager();
-            // 3. Créer le topic
-            $topic = $topicManager->add([
+    
+            $topic_id = $topicManager->add([
                 "title" => $title,
-                 "category_id" => $category_id,
-                 "user_id" => Session::getUser()->getId(),
-               
+                "category_id" => $category_id,
+                "user_id" => Session::getUser()->getId()
             ]);
-            // 4. Créer le premier post
-             $postManager->add([
+    
+            // 5️ Création du premier post via PostManager
+            $postManager->add([
                 "content" => $content,
-                "user_id" => Session::getUser()->getId(),
-                "topic_id" => $topic,
-      
-             ]);
-     
-        
-            // 5. Redirection vers le topic
-            $this->redirectTo("forum", "listAllTopics");
-        }
-        else {
-            Session::addFlash("error", "Tous les champs sont obligatoires.");
+                "topic_id" => $topic_id,
+                "user_id" => Session::getUser()->getId()
+            ]);
+    
+            // 6️ Message de succès et redirection
+            Session::addFlash("success", "Topic créé avec succès !");
+            $this->redirectTo("forum", "listPostsByTopic", $topic_id);
+        } else {
+            Session::addFlash("error", "Méthode invalide.");
             $this->redirectTo("forum", "addTopic");
         }
-    } else {
-        Session::addFlash("error", "Formulaire incomplet.");
-        $this->redirectTo("forum", "addTopic");
     }
-}
-}
+    
     
 public function listTopicsByCategory($id) {
 

@@ -16,5 +16,7 @@
     <label for="content">Message :</label><br>
     <!--<textarea id="content" name="content" class="tinymce" required></textarea>--> 
     <textarea id="content" name="content" ></textarea>
+  <!-- Champ caché pour CSRF -->
+  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($token) ?>">  
     <button type="submit" name="submit">Créer le Topic</button>    
 </form>

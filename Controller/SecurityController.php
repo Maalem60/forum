@@ -11,11 +11,24 @@ class SecurityController extends AbstractController implements ControllerInterfa
 {
     // Méthodes liées à l'authentification : register, login, logout
 
-   public function login()
+    
+    public function login()
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        // 1️ Vérification du token CSRF
+        $token_post = $_POST['csrf_token'] ?? '';
+        $token_session = $_SESSION['csrf_token'] ?? '';
+        if (!hash_equals($token_session, $token_post)) {
+            Session::addFlash("error", "Jeton CSRF invalide.");
+            $this->redirectTo("security", "login");
+            return;
+        }
+        unset($_SESSION['csrf_token']); // régénération
+
+        // 2️ Récupération des données
         $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $password = $_POST['password']; // brut pour password_verify
 
         if (!$pseudo || !$password) {
             Session::addFlash("error", "❌ Veuillez remplir tous les champs.");
@@ -23,72 +36,36 @@ class SecurityController extends AbstractController implements ControllerInterfa
             return;
         }
 
+        // 3️ Recherche utilisateur
         $userManager = new UserManager();
         $user = $userManager->findOneByPseudo($pseudo);
 
+        // 4️ Vérification du mot de passe
         if ($user && password_verify($password, $user->getPassword())) {
-            session_start();
-            $_SESSION['user_id'] = $user->getId();
+            Session::setUser($user);
+            Session::addFlash("success", "Connexion réussie !");
             $this->redirectTo("forum", "index");
         } else {
-            Session::addFlash("error", "❌ Identifiants incorrects");
+            Session::addFlash("error", "❌ Pseudo ou mot de passe incorrect");
             $this->redirectTo("security", "login");
         }
-    }
-
-    return [
-        "view" => "security/login.php",
-        "meta_description" => "Connexion à l'espace membre"
-    ];
-}
-
-
-    public function register()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $pseudo = filter_input(INPUT_POST, 'pseudo', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $password2 = filter_input(INPUT_POST, 'password2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-        if ($pseudo && $email && $password && $password2) {
-            if ($password !== $password2) {
-                Session::addFlash("error", "❌ Les mots de passe ne correspondent pas.");
-            } elseif (strlen($password) < 6) {
-                Session::addFlash("error", "❌ Le mot de passe doit contenir au moins 6 caractères.");
-            } else {
-                $userManager = new UserManager();
-
-                $pseudoExists = $userManager->findOneByPseudo($pseudo);
-                $emailExists = $userManager->findOneByEmail($email);
-
-                $role = 'ROLE_USER';
-
-                if ($pseudoExists || $emailExists) {
-                    Session::addFlash("error", "❌ Ce pseudo ou email est déjà utilisé.");
-                } else {
-                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                    $userManager->addUser($pseudo, $email, $hashedPassword, $role);
-
-                    Session::addFlash("success", "✅ Utilisateur $pseudo inscrit avec succès !");
-                    $this->redirectTo("security", "login");
-                }
-            }
-        } else {
-            Session::addFlash("error", "❌ Veuillez remplir tous les champs.");
+    } else {
+        // 5️ Génération du token CSRF pour le formulaire
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
+        $token = $_SESSION['csrf_token'];
 
-        // En cas d'erreur, on revient sur la page d'inscription
-        $this->redirectTo("security", "register");
+        return [
+            "view" => "security/login.php",
+            "meta_description" => "Connexion à l'espace membre",
+            "data" => ["token" => $token]
+        ];
     }
-
-    // Si ce n’est pas une requête POST, on affiche le formulaire
-    return [
-        "view" => "security/register.php",
-        "meta_description" => "Inscription sur le forum"
-    ];
 }
 
+
+  
     public function logout()
     {
         Session::destroy();

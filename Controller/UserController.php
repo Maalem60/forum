@@ -3,12 +3,13 @@ namespace Controller;
 
 use App\AbstractController;
 use App\Session;
-use Model\Managers\UserManager; // ⬅️ ajout du use ici
+use Model\Managers\UserManager; // <- ajout du user ici
 
 class UserController extends AbstractController
 {
 public function listUsers()
 {
+
     // Bloque l'accès si l'utilisateur n'est pas admin
     $this->restrictTo("ROLE_ADMIN");
 

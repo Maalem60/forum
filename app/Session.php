@@ -9,7 +9,13 @@ class Session {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    
+        // Génération du token CSRF si inexistant
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
     }
+    
 
     // ---------------------------
     // GESTION DE L'UTILISATEUR

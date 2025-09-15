@@ -15,8 +15,12 @@ class User extends Entity
     private $role;  // Ajout de la propriété des rôles
 
     public function __construct($data)
+<<<<<<< HEAD
     {
         // $this->role = []; // initialiser les roles de chacun ici.       
+=======
+    {      
+>>>>>>> 7d21baa (Ajout des dernières modification + mises à jour des entités et vues + suppression d'anciennes images)
         $this->hydrate($data);
     }
 
@@ -100,7 +104,11 @@ class User extends Entity
 
     public function hasRole($role)
     { // Vérifier si le rôle existe dans le tableau des rôles
+<<<<<<< HEAD
         $this->role === $role;
+=======
+        return $this->role === $role;
+>>>>>>> 7d21baa (Ajout des dernières modification + mises à jour des entités et vues + suppression d'anciennes images)
     }
 
 
